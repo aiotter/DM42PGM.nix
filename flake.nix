@@ -84,7 +84,18 @@
           inherit (packages) flasher;
           firmwares = { inherit (packages) dm42 dm42n; };
         in
-        lib.mapAttrs (model: firmware: {
+        {
+          default = {
+            type = "app";
+            program = toString (
+              pkgs.writeShellScript "dm42-select-model" ''
+                echo 'No default app. Specify #dm42 or #dm42n on the flake reference.' >&2
+                exit 1
+              ''
+            );
+          };
+        }
+        // lib.mapAttrs (model: firmware: {
           type = "app";
           program = toString (
             pkgs.writeShellScript "${model}-flash" ''
