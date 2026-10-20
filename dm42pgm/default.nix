@@ -19,12 +19,12 @@ let
     hash = "sha256-mZvL6kVjaf2FN2s8MfSx9ZNFLD4MFe/r4/zNjifpZcA=";
   };
 
-  # NAR hashes of the official firmware files for testers.runCommand.
+  # File hashes of the official firmware files for testers.runCommand.
   # Calculate the hash with, for example:
-  # nix hash path DM42-3.26.pgm
+  # nix hash file DM42-3.26.pgm
   expectedFirmwareHash = {
-    dm42 = "sha256-y5gI8B+uw3HIRyZjZb0brGV/HgbLPHCvjVLUzUOjE80=";
-    dm42n = "sha256-wHRDXODOyOjL9DCfI0Gi/saGWFuCKXJH4BsaYRYOEUw=";
+    dm42 = "sha256-tOFwRCFp72JUQ6GwDsgnESvhaOxFzbFAiknxG1E27V0=";
+    dm42n = "sha256-ggmDby5YHMGUsWu03ApvCt8Y+55tyUeUAzPCY97K3Fc=";
   };
 in
 

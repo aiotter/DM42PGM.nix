@@ -116,6 +116,7 @@
             pkgs.testers.runCommand {
               name = "${firmwarePackage.name}-firmware-hash";
               hash = firmwarePackage.expectedFirmwareHash;
+              outputHashMode = "flat";
               script = ''cp ${firmwarePackage}/* "$out"'';
             };
         in
