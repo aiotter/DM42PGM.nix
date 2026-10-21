@@ -34,6 +34,13 @@ This overrides the Free42 input for that build without changing `flake.lock`.
 
 Even when sources are overridden with `--override-input`, `nix flake check` builds from the pinned official sources and verifies the firmware hashes.
 
+## Tests in custom source trees
+
+If a Free42 or DM42PGM source tree contains `tests/Makefile`, the firmware build
+automatically runs it. Its default target should build and run the tests on the
+build machine, returning a nonzero status if any test fails. A test failure fails
+the firmware build. Source trees without `tests/Makefile` skip testing.
+
 ## Install on a DM42/DM42n
 
 ### Load Program from the USB disk
