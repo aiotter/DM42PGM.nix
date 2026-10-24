@@ -8,8 +8,10 @@
 
   free42-lib,
 
-  dmcp5 ? true,
+  model ? "dm42n",
 }:
+
+assert lib.assertOneOf "model" model [ "dm42" "dm42n" ];
 
 let
   src = fetchFromGitHub {
@@ -26,6 +28,8 @@ let
     dm42 = "sha256-tOFwRCFp72JUQ6GwDsgnESvhaOxFzbFAiknxG1E27V0=";
     dm42n = "sha256-ggmDby5YHMGUsWu03ApvCt8Y+55tyUeUAzPCY97K3Fc=";
   };
+
+  dmcp5 = model == "dm42n";
 in
 
 stdenv.mkDerivation (finalAttrs: {
@@ -41,15 +45,15 @@ stdenv.mkDerivation (finalAttrs: {
   inherit src;
 
   passthru = {
-    inherit free42-lib;
+    free42-lib = free42-lib.override { inherit model; };
 
     objects = callPackage ./objects.nix {
       inherit stdenv dmcp5;
       inherit (finalAttrs) src version makeFlags;
     };
 
-    firmwareFileName = "${finalAttrs.pname}-${finalAttrs.version}.${if dmcp5 then "pg5" else "pgm"}";
-    expectedFirmwareHash = with expectedFirmwareHash; if dmcp5 then dm42n else dm42;
+    firmwareFileName = with finalAttrs; "${pname}-${version}.${if dmcp5 then "pg5" else "pgm"}";
+    expectedFirmwareHash = expectedFirmwareHash.${model};
   };
 
   nativeBuildInputs = [
@@ -58,7 +62,7 @@ stdenv.mkDerivation (finalAttrs: {
 
   makeFlags = [
     # The official DM42n firmware uses libfree42_bcd.a.
-    "LIBS=lib/${if dmcp5 then "libfree42_bcd.a" else "libfree42_bcd_rel.a"} lib/gcc111libbid_hard.a"
+    "LIBS=lib/${finalAttrs.passthru.free42-lib.libraryFileName} lib/gcc111libbid_hard.a"
     "DMCP5=${lib.optionalString dmcp5 "1"}"
     "TARGET=${finalAttrs.pname}-${finalAttrs.version}"
   ];
@@ -69,7 +73,7 @@ stdenv.mkDerivation (finalAttrs: {
   unpackCmd = "cp -a ${finalAttrs.passthru.objects} source";
 
   preBuild = ''
-    cp "${finalAttrs.passthru.free42-lib}"/{libfree42_bcd.a,libfree42_bcd_rel.a} lib
+    cp "${finalAttrs.passthru.free42-lib}/${finalAttrs.passthru.free42-lib.libraryFileName}" lib/
   '';
 
   installPhase = ''

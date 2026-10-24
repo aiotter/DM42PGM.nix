@@ -40,8 +40,8 @@
           };
 
           free42-lib = callPackage ./free42 { };
-          dm42 = callPackage ./dm42pgm { dmcp5 = false; };
-          dm42n = callPackage ./dm42pgm { dmcp5 = true; };
+          dm42 = callPackage ./dm42pgm { model = "dm42"; };
+          dm42n = callPackage ./dm42pgm { model = "dm42n"; };
 
           free42Src = if free42.outPath == self.outPath then free42-lib.src else lib.cleanSource free42;
           dm42pgmSrc = if dm42pgm.outPath == self.outPath then dm42.src else lib.cleanSource dm42pgm;
